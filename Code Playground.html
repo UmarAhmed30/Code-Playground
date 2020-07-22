@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>jQueryUI</title>
+        <link href="jquery-ui/jquery-ui.css" rel="stylesheet">
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js"></script>
+        
+        <style>
+            body{
+                font-family: sans-serif;
+                margin: 0px;
+                padding: 0px;
+            }
+
+            .navbar{
+                width: 100%;
+                background-color: black;
+                color: white;
+                height: 50px;
+            }
+
+            .logo{
+                float: left;
+                padding: 8px 15px;
+                font-size: 30px;
+                font-weight: bold;
+            }
+
+            .buttonContainer{
+                margin: 0px auto;
+                width: 285px;
+                padding: 5px;
+                position: absolute;
+                left: 42%;   
+            }
+
+            .toggleButton{
+                float: left;
+                border: 1px solid white;
+                padding: 10px;
+            }
+
+            .toggleButton:hover{
+                background-color: #32ff6a;
+                border: 1px solid #32ff6a;
+                cursor: pointer;
+            }
+
+            .active{
+                background-color: #32ff6a;
+                border: 1px solid #32ff6a;
+            }
+
+            #html{
+                border-bottom-left-radius: 5px;
+                border-top-left-radius: 5px;
+            }
+
+            #output{
+                border-bottom-right-radius: 5px;
+                border-top-right-radius: 5px;
+            }
+
+            textarea{
+                resize: none;
+                padding: 5px;
+                width: 50%;
+                height: 100%;
+            }
+
+            .panel{
+                float: left;
+                width: 50%;
+            }
+
+            iframe{
+                border: none;
+            }
+
+            #htmlArea{
+                border-top: none;
+                border-color: black;
+                position: absolute;
+                left: 0%;
+            }
+            
+            #outputArea{
+                position: absolute;
+                right: 0%;
+            }
+
+            .hidden{
+                display: none;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="navbar">
+            <div class="logo">
+                Code Playground
+            </div>
+
+            <div class="buttonContainer">
+                <div class="toggleButton active" id="html">
+                    HTML
+                </div>
+    
+                <div class="toggleButton" id="css">
+                    CSS
+                </div>
+    
+                <div class="toggleButton" id="js">
+                    Javascript
+                </div>
+    
+                <div class="toggleButton active" id="output">
+                    Output
+                </div>
+            </div>
+
+        </div>
+
+        <div class="container">
+            <textarea id="htmlArea" class="panel"><p id="demo">Hello World!</p></textarea>
+        
+            <textarea id="cssArea" class="panel hidden">p{color:red};</textarea>
+
+            <textarea id="jsArea" class="panel hidden">document.getElementById("demo").innerHTML = "Hello Umar!";</textarea>
+
+            <iframe id="outputArea" class="panel"></iframe>
+        </div>
+
+        <script>
+
+            function output() {
+                $("iframe").contents().find("html").html("<html><head><style type='text/css'>" + $("#cssArea").val() + "</style></head><body>" + $("#htmlArea").val() + "</body></html");
+
+                document.getElementById("outputArea").contentWindow.eval($("#jsArea").val());
+            }
+
+            $(".toggleButton").click(function() {
+                $(this).toggleClass("active");
+                
+                var panel_id = $(this).attr("id") + "Area";
+                
+                $("#"+panel_id).toggleClass("hidden");
+
+                var activeClassesCount = 4 - $(".hidden").length;
+
+                $(".panel").width($(window).width() / activeClassesCount - 10);
+
+                if(panel_id == "outputArea"){
+                    $(".panel").width($(window).width() / activeClassesCount - 10.2);
+                    $("#cssArea").css({'margin-left':230});
+                }
+
+                if(activeClassesCount == 2){
+                    if(panel_id == "jsArea"){
+                        $("#jsArea").css({'margin-left':-280});
+                        $(".panel").width($(window).width() / activeClassesCount - 10);
+                    }
+                    else{
+                        if(panel_id == "cssArea"){
+                            $("#cssArea").css({'margin-left':-280});
+                            $(".panel").width($(window).width() / activeClassesCount - 10);    
+                        }
+                    }
+                }
+
+                if(activeClassesCount == 3){
+                    if(panel_id == "jsArea"){
+                        $("#jsArea").css({'margin-left':230});
+                    }
+                    else{
+                        $("#cssArea").css({'margin-left':230});
+                    }
+                }
+
+                if(activeClassesCount == 4){
+                    if(panel_id == "jsArea"){
+                        $("#cssArea").css({'margin-left':100});
+                    }
+                    else{
+                        $("#cssArea").css({'margin-left':100});
+                        $("#jsArea").css({'margin-left':0});
+                        $(".panel").width($(window).width() / activeClassesCount - 5);
+                    }
+                }
+            });
+
+            $(".panel").height($(window).height() - $(".navbar").height() - 12);
+
+            $(".panel").width($(window).width() / 2 - 10);
+            
+            $("#htmlArea").on('change keyup paste', function() {
+                output();
+            });
+        </script>
+    </body>
+</html>
